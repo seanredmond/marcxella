@@ -133,6 +133,16 @@ RSpec.describe Marcxella::DataField do
     expect(@d.subfields.count).to eq 2
     expect(@d.subfields.map{|r| r.class}.uniq).to eq [Marcxella::SubField]
   end
+
+  describe "#to_s" do
+    it "can be turned into a string" do
+      expect(@d.to_s).to eq "245  10$aKindred /$cOctavia E. Butler."
+    end
+
+    it "substitutes hashes for blank indicators" do
+      expect(@kindred.field("020").first.to_s).to eq "020  #\#$a9781472214812"
+    end
+  end
 end
 
 

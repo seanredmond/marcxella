@@ -7,5 +7,17 @@ module Marcxella
       @ind2 = node['ind2']
       @subfields = node.css('subfield').map{|s| SubField.new(s)}
     end
+
+    def to_s
+      "%s  %s%s%s" % [@tag, ind_to_s(@ind1), ind_to_s(@ind2), @subfields.join('')]
+    end
+
+    def ind_to_s(i)
+      if i == ' '
+        return '#'
+      end
+      
+      return i
+    end
   end
 end
