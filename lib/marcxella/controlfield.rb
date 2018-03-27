@@ -1,5 +1,6 @@
 module Marcxella
   class ControlField
+    attr_reader :tag, :value
     def initialize(node)
       @tag = node['tag']
       @value = node.text

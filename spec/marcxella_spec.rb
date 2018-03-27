@@ -89,5 +89,27 @@ RSpec.describe Marcxella::Record do
     end
   end 
 end
+
+RSpec.describe Marcxella::ControlField do
+  before(:context) do
+    @butler = Marcxella::Document.new(File.open(XML_BUTLER, 'r'))
+    @kindred = @butler.records.first
+    @c = @kindred.field("001").first
+  end
+
+  it "has a tag" do
+    expect(@c.tag).to eq "001"
+  end
+
+  it "has a value" do
+    expect(@c.value).to eq "1027474578"
+  end
+
+  describe "#to_s" do
+    it "can be turned into a string" do
+      expect(@c.to_s).to eq "001    1027474578"
+    end
+  end
+end
     
     
