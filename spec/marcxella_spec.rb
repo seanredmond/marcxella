@@ -73,6 +73,13 @@ RSpec.describe Marcxella::Record do
         expect(@kindred.field("245").first).to be_a Marcxella::DataField
         expect(@kindred.field("001").first).to be_a Marcxella::ControlField
       end
+
+      it "returns a subfield by tag and code" do
+        s = @kindred.field("245", "a")
+        expect(s).to be_a Array
+        expect(s.map{|c| c.class}.uniq).to eq [Marcxella::SubField]
+        expect(s.first.value).to eq "Kindred /"
+      end
     end
 
     describe "#fields" do
@@ -134,6 +141,15 @@ RSpec.describe Marcxella::DataField do
     expect(@d.subfields.map{|r| r.class}.uniq).to eq [Marcxella::SubField]
   end
 
+  describe "#subfield" do
+    it "returns subfields by code" do
+      s = @d.subfield("a")
+      expect(s).to be_a Array
+      expect(s.map{|c| c.class}.uniq).to eq [Marcxella::SubField]
+      expect(s.first.value).to eq "Kindred /"
+    end
+  end
+  
   describe "#to_s" do
     it "can be turned into a string" do
       expect(@d.to_s).to eq "245  10$aKindred /$cOctavia E. Butler."

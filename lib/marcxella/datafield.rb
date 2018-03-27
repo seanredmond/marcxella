@@ -12,6 +12,10 @@ module Marcxella
       "%s  %s%s%s" % [@tag, ind_to_s(@ind1), ind_to_s(@ind2), @subfields.join('')]
     end
 
+    def subfield(code)
+      @subfields.select{|s| s.code == code }
+    end
+    
     def ind_to_s(i)
       if i == ' '
         return '#'
