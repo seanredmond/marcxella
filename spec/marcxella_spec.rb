@@ -74,8 +74,20 @@ RSpec.describe Marcxella::Record do
         expect(@kindred.field("001").first).to be_a Marcxella::ControlField
       end
     end
+
+    describe "#fields" do
+      it "returns an Array" do
+        expect(@kindred.fields).to be_a Array
+      end
+
+      it "returns an Array of ControlField and DataField objects" do
+        field_types = @kindred.fields.map{|f| f.class}.uniq
+        expect(field_types.count).to eq 2
+        expect(field_types).to include (Marcxella::ControlField)
+        expect(field_types).to include (Marcxella::DataField)
+      end
+    end
   end 
 end
-
     
     
