@@ -12,5 +12,10 @@ module Marcxella
     def records
       @document.css('record').map{|r| Record.new(r)}
     end
+
+    def collections
+      @document.css('collection').map{|c| Collection.new(c)}
+    end
+    
   end
 end

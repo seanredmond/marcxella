@@ -39,9 +39,46 @@ RSpec.describe Marcxella::Document do
       expect(@butler.records).to be_a Array
       expect(@butler.records.map{|r| r.class}.uniq).to eq [Marcxella::Record]
     end
+
+    it "returns records from inside collections" do
+      lengle = Marcxella::Document.new(File.open(XML_LENGLE, 'r'))
+      expect(lengle.records.map{|r| r.class}.uniq).to eq [Marcxella::Record]
+    end
   end
+
+  describe "#collections" do
+    it "returns collections" do
+         lengle = Marcxella::Document.new(File.open(XML_LENGLE, 'r'))
+         expect(lengle.collections.map{|r| r.class}.uniq).
+           to eq [Marcxella::Collection]
+       end
+    end
 end
 
+RSpec.describe Marcxella::Collection do
+  describe "instantiation" do
+    it "can be created from a Nokogiri::node" do
+      doc = Nokogiri::XML(File.open(XML_LENGLE))
+      node = doc.css('collection').first
+      expect(Marcxella::Collection.new(node)).to be_a Marcxella::Collection
+    end
+  end
+
+  describe "methods" do
+    before(:context) do
+      @lengle = Marcxella::Document.new(File.open(XML_LENGLE, 'r'))
+    end
+
+    describe "#records" do
+      it "returns records" do
+        expect(@lengle.records).to be_a Array
+        expect(@lengle.records.count).to eq 1
+      expect(@lengle.records.map{|r| r.class}.uniq).to eq [Marcxella::Record]
+      end
+    end
+  end
+end
+      
 RSpec.describe Marcxella::Record do
   describe "instantiation" do
     it "can be created from a Nokogiri::node" do

@@ -16,3 +16,4 @@ end
 SPEC_DIR = File.dirname(__FILE__)
 XML_DIR = File.join(SPEC_DIR, 'xml')
 XML_BUTLER = File.join(XML_DIR, '1027474578.xml')
+XML_LENGLE = File.join(XML_DIR, '14026028.xml')
