@@ -29,6 +29,17 @@ RSpec.describe Marcxella::Document do
     d = Marcxella::Document.new(f.read)
     expect(d).to be_a Marcxella::Document
   end
+
+  describe "#records" do
+    before(:context) do
+      @butler = Marcxella::Document.new(File.open(XML_BUTLER, 'r'))
+    end
+
+    it "returns records" do
+      expect(@butler.records).to be_a Array
+      expect(@butler.records.map{|r| r.class}.uniq).to eq [Marcxella::Record]
+    end
+  end
 end
 
 RSpec.describe Marcxella::Record do

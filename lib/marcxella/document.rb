@@ -8,5 +8,9 @@ module Marcxella
         @document = Nokogiri::XML(xml)
       end
     end
+
+    def records
+      @document.css('record').map{|r| Record.new(r)}
+    end
   end
 end
