@@ -106,6 +106,10 @@ RSpec.describe Marcxella::Record do
     end
 
     describe "#field" do
+      it "has a leader" do
+        expect(@kindred.leader).to eq '00000cam a2200000Mi 4500'
+      end
+      
       it "returns a field by tag (as a string)" do
         f = @kindred.field("245")
         expect(f).to be_a Array
