@@ -47,12 +47,23 @@ RSpec.describe Marcxella::Document do
   end
 
   describe "#collections" do
-    it "returns collections" do
-         lengle = Marcxella::Document.new(File.open(XML_LENGLE, 'r'))
-         expect(lengle.collections.map{|r| r.class}.uniq).
-           to eq [Marcxella::Collection]
-       end
+    before(:context) do
+      @butler = Marcxella::Document.new(File.open(XML_BUTLER, 'r'))
     end
+
+    it "returns collections" do
+      lengle = Marcxella::Document.new(File.open(XML_LENGLE, 'r'))
+      expect(lengle.collections.map{|r| r.class}.uniq).
+        to eq [Marcxella::Collection]
+    end
+
+    it "is an empty Array if there are no collections" do
+      expect(@butler.collections).to be_a Array
+      expect(@butler.collections).to be_empty
+    end
+  end
+
+  
 end
 
 RSpec.describe Marcxella::Collection do
