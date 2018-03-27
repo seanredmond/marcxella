@@ -134,4 +134,27 @@ RSpec.describe Marcxella::DataField do
     expect(@d.subfields.map{|r| r.class}.uniq).to eq [Marcxella::SubField]
   end
 end
-  
+
+
+RSpec.describe Marcxella::SubField do
+  before(:context) do
+    @butler = Marcxella::Document.new(File.open(XML_BUTLER, 'r'))
+    @kindred = @butler.records.first
+    @d = @kindred.field("245").first
+    @s = @d.subfields.first
+  end
+
+  it "has a code" do
+    expect(@s.code).to eq 'a'
+  end
+
+  it "has a value" do
+    expect(@s.value).to eq 'Kindred /'
+  end
+
+  describe "#to_s" do
+    it "can be turned into a string" do
+      expect(@s.to_s).to eq '$aKindred /'
+    end
+  end
+end
