@@ -112,4 +112,26 @@ RSpec.describe Marcxella::ControlField do
   end
 end
     
-    
+RSpec.describe Marcxella::DataField do
+  before(:context) do
+    @butler = Marcxella::Document.new(File.open(XML_BUTLER, 'r'))
+    @kindred = @butler.records.first
+    @d = @kindred.field("245").first
+  end
+
+  it "has a tag" do
+    expect(@d.tag).to eq "245"
+  end
+
+  it "has two indicators" do
+    expect(@d.ind1).to eq "1"
+    expect(@d.ind2).to eq "0"
+  end
+
+  it "has subfields" do
+    expect(@d.subfields).to be_a Array
+    expect(@d.subfields.count).to eq 2
+    expect(@d.subfields.map{|r| r.class}.uniq).to eq [Marcxella::SubField]
+  end
+end
+  
