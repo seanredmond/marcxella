@@ -7,6 +7,10 @@ module Marcxella
     end
 
     def field(tag, code = nil)
+      if tag.is_a?(Integer)
+        tag = "%0.3d" % [tag]
+      end
+
       if code.nil?
         return @node.
           css("controlfield[tag=\"%s\"], datafield[tag=\"%s\"]" % [tag, tag]).

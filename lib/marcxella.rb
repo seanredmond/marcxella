@@ -1,4 +1,6 @@
 require "nokogiri"
+require "marcxella/controlfield"
+require "marcxella/datafield"
 require "marcxella/record"
 require "marcxella/collection"
 require "marcxella/document"
