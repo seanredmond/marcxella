@@ -97,6 +97,10 @@ module Marcxella
       not field(tag, code).empty?
     end
 
+    # The record's main entry field. Every record should have one (and only
+    #   one) of the 1XX fields (100, 110, 111, 130).
+    # @ since 0.1.0
+    # @return DataField
     def mainEntry
       return field(["100", "110", "111", "130"]).first
     end
