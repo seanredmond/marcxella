@@ -169,6 +169,12 @@ RSpec.describe Marcxella::ControlField do
       expect(@c.to_s).to eq "001    1027474578"
     end
   end
+
+  describe "#display" do
+    it "has a display form" do
+      expect(@c.display).to eq "1027474578"
+    end
+  end
 end
     
 RSpec.describe Marcxella::DataField do
@@ -209,6 +215,12 @@ RSpec.describe Marcxella::DataField do
 
     it "substitutes hashes for blank indicators" do
       expect(@kindred.field("020").first.to_s).to eq "020  #\#$a9781472214812"
+    end
+  end
+
+  describe "#display" do
+    it "has a display form" do
+      expect(@d.display).to eq "Kindred /Octavia E. Butler."
     end
   end
 end

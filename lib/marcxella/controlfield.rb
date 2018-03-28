@@ -9,5 +9,10 @@ module Marcxella
     def to_s
       "%s    %s" % [@tag, @value]
     end
+
+    def display
+      @value
+    end
+    
   end
 end

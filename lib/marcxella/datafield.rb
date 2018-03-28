@@ -8,6 +8,10 @@ module Marcxella
       @subfields = node.css('subfield').map{|s| SubField.new(s)}
     end
 
+    def display
+      @subfields.map{|s| s.value}.join('')
+    end
+    
     def to_s
       "%s  %s%s%s" % [@tag, ind_to_s(@ind1), ind_to_s(@ind2), @subfields.join('')]
     end
