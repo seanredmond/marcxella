@@ -91,6 +91,7 @@ module Marcxella
     end
 
     # Does the record include a field with a specific tag?
+    #
     # @return [boolean] true if there is at least one control or data field
     #   with the specified tag.
     def include?(tag, code = nil)
@@ -98,11 +99,33 @@ module Marcxella
     end
 
     # The record's main entry field. Every record should have one (and only
-    #   one) of the 1XX fields (100, 110, 111, 130).
-    # @ since 0.1.0
-    # @return DataField
+    # one) of the 1XX fields (100, 110, 111, 130).
+    #
+    # @since 0.1.0
+    # @return [DataField]
+    # @see https://www.loc.gov/marc/bibliographic/bd1xx.html
+    #   1XX - Main Entries-General Information
     def mainEntry
-      return field(["100", "110", "111", "130"]).first
+      field(["100", "110", "111", "130"]).first
+    end
+
+    # The record's title statement. That is, its 245 field
+    #
+    # @since 0.1.0
+    # @return [DataField]
+    # @see https://www.loc.gov/marc/bibliographic/bd245.html
+    #   245 - Title Statement
+    def titleStatement
+      field("245").first
+    end
+
+    # The title and title-related fields (20X-24X)
+    # @since 0.1.0
+    # @return [Array<DataField>]
+    # @see https://www.loc.gov/marc/bibliographic/bd20x24x.html
+    #   20X-24X - Title and Title-Related Fields - General Information
+    def titles
+      field(["210", "222", "240", "242", "243", "245", "246", "247"])
     end
 
     def objectify(f)

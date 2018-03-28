@@ -201,6 +201,24 @@ RSpec.describe Marcxella::Record do
         expect(q.tag).to eq "111"
       end
     end
+
+    describe "#titleStatement" do
+      it "returns the title statement" do
+        expect(@kindred.titleStatement.display).
+          to eq "Kindred /Octavia E. Butler."
+      end
+    end
+
+    describe "#titles" do
+      it "returns all the title fields" do
+        @binti = Marcxella::Document.new(File.open(XML_OKORAFOR)).
+                 records.first
+        expect(@binti.titles).to be_a Array
+        expect(@binti.titles.count).to eq 2
+        expect(@binti.titles.first.tag).to eq "245"
+        expect(@binti.titles.last.tag).to eq "246"
+      end
+    end
   end 
 end
 
