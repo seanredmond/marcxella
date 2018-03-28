@@ -97,6 +97,10 @@ module Marcxella
       not field(tag, code).empty?
     end
 
+    def mainEntry
+      return field(["100", "110", "111", "130"]).first
+    end
+
     def objectify(f)
       if f.name == 'controlfield'
         return ControlField.new(f)

@@ -175,7 +175,6 @@ RSpec.describe Marcxella::Record do
         expect(s.map{|f| f.value}).
           to eq ["African American women", "Time travel", "Fiction."]
       end
-      
     end
 
     describe "#fields" do
@@ -188,6 +187,18 @@ RSpec.describe Marcxella::Record do
         expect(field_types.count).to eq 2
         expect(field_types).to include (Marcxella::ControlField)
         expect(field_types).to include (Marcxella::DataField)
+      end
+    end
+
+    describe "#mainEntry" do
+      it "returns a single main entry data field" do
+        m = @kindred.mainEntry
+        q = Marcxella::Document.new(File.open(XML_QUILT)).
+            records.first.mainEntry
+        expect(m).to be_a Marcxella::DataField
+        expect(m.tag).to eq "100"
+        expect(q).to be_a Marcxella::DataField
+        expect(q.tag).to eq "111"
       end
     end
   end 
