@@ -126,9 +126,45 @@ Subfields have a `code` and a `value` and can be printed:
 You can also get the subfield from the record by calling `field` with
 the tag and code:
 
-    > r.field("100", "a").first.to_s
+    > record.field("100", "a").first.to_s
      => "$aButler, Octavia Estelle"
 
+If you want to get multiple fields at once, you can pass an array:
+
+    record.field(["600", "650", "651"])
+	
+This will return an array of any of those fields that exist in a
+record. You can add a code:
+
+    record.field(["600", "650", "651"], "a")
+	
+This would return an array of 600$a, 650$a, and/or 651$a
+subfields. The array can be a list of tag and code pairs:
+
+    record.field([["600", "a"], ["650", "b"], ["651", "c"]])
+	
+From this you would get an array of the 600$a, 650$b, and 651$c
+subfields. Finally, you can mix and match:
+
+	record.field(["600", "650", ["651", "a"]])
+	
+The resulting array would contain some DataFields (for the 600s and
+650s) and some subfields (651$a). An additional code will act as a
+default. These two are equivalent:
+
+	record.field(["600", "650", ["651", "a"]], "b")
+    record.field([["600", "b"], ["650", "b"], ["651", "a"]])
+	
+There are a few convenience methods.
+
+	# Get the title statement (245) field
+    record.titleStatement
+	
+	# Get all the title fields (20X-24X)
+	record.titles
+	
+	# Get the main entry field (one of the 1XX) fields
+	record.mainEntry
 
 ## Development
 
