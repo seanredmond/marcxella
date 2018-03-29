@@ -118,80 +118,10 @@ RSpec.describe Marcxella::Record do
         expect(f.map{|r| r.class}.uniq).to eq [Marcxella::DataField]
       end
 
-      it "returns a field by tag (as a number)" do
-        expect(@kindred.field(245).first).to be_a Marcxella::DataField
-        expect(@kindred.field(001).first).to be_a Marcxella::ControlField
-      end
-      
       it "returns control fields and data fields" do
         expect(@kindred.field("245").first).to be_a Marcxella::DataField
         expect(@kindred.field("001").first).to be_a Marcxella::ControlField
       end
-
-      it "returns a subfield by tag and code" do
-        s = @kindred.field("245", "a")
-        expect(s).to be_a Array
-        expect(s.map{|c| c.class}.uniq).to eq [Marcxella::SubField]
-        expect(s.first.value).to eq "Kindred /"
-      end
-
-      it "has no subfields for control fields" do
-        s = @kindred.field("001", "a")
-        expect(s).to be_a Array
-        expect(s).to be_empty 
-      end
-
-      it "accepts an array of tags" do
-        s = @kindred.field(["650", "651"])
-        expect(s).to be_a Array
-        expect(s.count).to eq 4
-        expect(s.map{|c| c.class}.uniq).to eq [Marcxella::DataField]
-        expect(s.map{|f| f.tag}).to eq ["650", "650", "651", "651"]
-      end
-
-      it "accepts an array of tags and one code" do
-        s = @kindred.field(["650", "651"], "x")
-        expect(s).to be_a Array
-        expect(s.count).to eq 3
-        expect(s.map{|c| c.class}.uniq).to eq [Marcxella::SubField]
-        expect(s.map{|f| f.value}).to eq ["Fiction.", "Fiction.", "History"]
-      end
-
-      it "accepts an array of arrays of tags and codes" do 
-        s = @kindred.field([["650", "x"], ["651", "v"]])
-        expect(s).to be_a Array
-        expect(s.count).to eq 3
-        expect(s.map{|c| c.class}.uniq).to eq [Marcxella::SubField]
-        expect(s.map{|f| f.value}).to eq ["Fiction.", "Fiction.", "Fiction."]
-      end
-
-      it "accepts a mix of tags and arrays of tags and codes" do 
-        s = @kindred.field(["650", ["651", "v"]])
-        expect(s).to be_a Array
-        expect(s.count).to eq 3
-        expect(s[0]).to be_a Marcxella::DataField
-        expect(s[0].tag).to eq "650"
-        expect(s[2]).to be_a Marcxella::SubField
-        expect(s[2].code).to eq "v"
-      end
-
-      it "accepts a mix of tags and arrays with a default code" do 
-        s = @kindred.field(["650", ["651", "v"]], "a")
-        expect(s).to be_a Array
-        expect(s.count).to eq 3
-        expect(s.map{|c| c.class}.uniq).to eq [Marcxella::SubField]
-        expect(s.map{|f| f.value}).
-          to eq ["African American women", "Time travel", "Fiction."]
-      end
-
-      it "can return a mix of ControlField, DataField, and SubField objects" do
-        s = @kindred.field(["001", "245", ["650", "a"]])
-        expect(s).to be_a Array
-        expect(s.count).to eq 4
-        expect(s[0]).to be_a Marcxella::ControlField
-        expect(s[1]).to be_a Marcxella::DataField
-        expect(s[2]).to be_a Marcxella::SubField
-      end        
     end
 
     describe "#fields" do
