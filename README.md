@@ -56,21 +56,46 @@ Records and collections can also be created directly from Nokogiri nodes:
 	
 ### Records and fields
 
-From a record, you can get a field by its tag. The tag can be a string
-or an integer. 
+From a record, you can get a field by its tag. The tag can be a string or an
+integer. The result is always an array. No distinction is made between repeating
+and non-repeating fields:
 
+
+    # These all work...
     record.field("245")
     record.field(245)
 	record.field("008")
-	record.field(8)
+	record.field(8) 
 	
-Be careful, though. Numbers begining with a 0 are octal numbers, so `008` is an error, and `010` actually means `8` or `"008"`. 
-	
-This always returns an array. No distinction is made between repeating
-and non-repeating fields:
+Be careful, though. Numbers begining with a 0 are octal numbers, so `010` actually means `8` or `"008"` and `008` is an error. 
 
+    # Don't do this
+    record.field(008)
+
+`Record#field` always returns an array:
+
+    > record.field("245").class
+     => Array
 	> puts record.field("245").first
      => "245  10$aKindred /$cOctavia E. Butler."
+
+There are a few convenience methods. `Record#titleStatement` returns the 245
+field (as a `DataField`, not an array).
+
+    > record.titleStatement.class
+     => Marcxella::DataField
+	> puts record.titleStatement
+     => "245  10$aKindred /$cOctavia E. Butler."
+
+`Record#titles` returns an array of all the title and title related fields
+(20X-24X)
+	
+	> record.titles
+
+`Record#mainEntry` will return whichever of the 1XX fields is in the record (there should be only one):
+
+	> puts record.mainEntry.tag
+     => "100"
 
 You can get anarray of all the fields:
 
@@ -112,6 +137,11 @@ Printing a data field (or calling the `#to_s` method) returns the customary repr
 
     > record.field("245").first.to_s
      => "245  10$aKindred /$cOctavia E. Butler."
+
+`#display` returns the contents of the fields joined together
+
+    > record.field("245").first.display
+      => "Kindred /Octavia E. Butler."
 
 Subfields have a `code` and a `value` and can be printed:
 
@@ -155,16 +185,6 @@ default. These two are equivalent:
 	record.field(["600", "650", ["651", "a"]], "b")
     record.field([["600", "b"], ["650", "b"], ["651", "a"]])
 	
-There are a few convenience methods.
-
-	# Get the title statement (245) field
-    record.titleStatement
-	
-	# Get all the title fields (20X-24X)
-	record.titles
-	
-	# Get the main entry field (one of the 1XX) fields
-	record.mainEntry
 
 ## Development
 
