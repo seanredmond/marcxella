@@ -169,6 +169,12 @@ given category:
     > rec.seriesAdded   # 80X-83X
     > rec.holdings      # 841-88X
 
+Some common numbers have convenience methods:
+
+    > record.lccn       # 010$a, String or nil
+    > record.isbns      # 020$a, Array of Strings, or []
+    > record.issns      # 022$a, Array of Strings, or []
+
 ### Leader
 
 You can get the record leader:

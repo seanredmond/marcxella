@@ -162,7 +162,31 @@ module Marcxella
     def holdings
       tag_range("841", "88X")
     end
-    
+
+    # The Library of Congress Control Number (010$a). Only returns the $a
+    #   subfields, nothing from the $b or $z
+    # @return [String] the LCCN, nil if there is none.
+    # @since 0.1.0
+    def lccn
+      s = subfield("010", "a")
+      return nil if s.empty?
+      s.first.value
+    end
+
+    # The International Standard Book Number (020$a)
+    # @return [Array<String>] An array of ISBNs
+    # @since 0.1.0
+    def isbns
+      subfield("020", "a").map{|s| s.value}
+    end
+
+    # The International Standard Serial Number (022$a)
+    # @return [Array<String>] An array of ISSNs
+    # @since 0.1.0
+    def issns
+      subfield("022", "a").map{|s| s.value}
+    end      
+
     def objectify(f)
       if f.name == 'controlfield'
         return ControlField.new(f)

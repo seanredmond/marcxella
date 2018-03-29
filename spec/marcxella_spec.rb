@@ -104,7 +104,9 @@ RSpec.describe Marcxella::Record do
       @butler = Marcxella::Document.new(File.open(XML_BUTLER, 'r'))
       @kindred = @butler.records.first
       @wrinkle = Marcxella::Document.new(File.open(XML_LENGLE, 'r')).
-                  records.first
+                   records.first
+      @quilt = Marcxella::Document.new(File.open(XML_QUILT)).
+                 records.first
     end
 
     describe "#field" do
@@ -162,8 +164,7 @@ RSpec.describe Marcxella::Record do
     describe "#mainEntry" do
       it "returns a single main entry data field" do
         m = @kindred.mainEntry
-        q = Marcxella::Document.new(File.open(XML_QUILT)).
-            records.first.mainEntry
+        q = @quilt.mainEntry
         expect(m).to be_a Marcxella::DataField
         expect(m.tag).to eq "100"
         expect(q).to be_a Marcxella::DataField
@@ -240,9 +241,7 @@ RSpec.describe Marcxella::Record do
 
     describe "#notes" do
       it "returns all the notes fields" do
-        quilt = Marcxella::Document.new(File.open(XML_QUILT)).
-                  records.first
-        notes = quilt.notes
+        notes = @quilt.notes
         expect(notes).to be_a Array
         expect(notes.count).to eq 3
         expect(notes[0].tag).to eq "500"
@@ -260,9 +259,7 @@ RSpec.describe Marcxella::Record do
 
     describe "#addedEntries" do
       it "returns all the added entryfields" do
-        quilt = Marcxella::Document.new(File.open(XML_QUILT)).
-                  records.first
-        added = quilt.addedEntries
+        added = @quilt.addedEntries
         expect(added).to be_a Array
         expect(added.count).to eq 2
         expect(added[0].tag).to eq "700"
@@ -270,7 +267,7 @@ RSpec.describe Marcxella::Record do
       end
     end
 
-    describe "linking" do
+    describe "#linking" do
       it "returns all the notes fields" do
         russian = Marcxella::Document.new(File.open(XML_RUSSIAN)).
                   records.first
@@ -281,7 +278,7 @@ RSpec.describe Marcxella::Record do
       end
     end
 
-    describe "seriesAdded" do
+    describe "#seriesAdded" do
       it "returns all the series added entry fields" do
         xenophon = Marcxella::Document.new(File.open(XML_XENOPHON)).
                   records.first
@@ -292,7 +289,7 @@ RSpec.describe Marcxella::Record do
       end
     end
 
-    describe "holdings" do
+    describe "#holdings" do
       it "returns all the holdings fields" do
         binti = Marcxella::Document.new(File.open(XML_OKORAFOR)).
                  records.first
@@ -300,6 +297,37 @@ RSpec.describe Marcxella::Record do
         expect(holdings).to be_a Array
         expect(holdings.count).to eq 1
         expect(holdings[0].tag).to eq "880"
+      end
+    end
+
+    describe "#lccn" do
+      it "returns the LCCN" do
+        expect(@quilt.lccn).to eq "   00010705 "
+      end
+
+      it "returns nil if there is no LCCN" do
+        expect(@kindred.lccn).to be_nil
+      end
+    end
+
+    describe "#isbns" do
+      it "returns an array of ISBNs" do
+        expect(@kindred.isbns).to be_a Array
+        expect(@kindred.isbns).to eq ["9781472214812", "1472214811"]
+      end
+    end
+
+    describe "#issns" do
+      it "returns an array of ISSNs" do
+        fissures = Marcxella::Document.new(File.open(XML_FISSURES)).
+                     records.first
+        expect(fissures.issns).to be_a Array
+        expect(fissures.issns).to eq ["1572733691 (pbk.)"]
+      end
+
+      it "is an empty array of there are no ISSNs" do
+        expect(@kindred.issns).to be_a Array
+        expect(@kindred.issns).to be_empty
       end
     end
   end 
