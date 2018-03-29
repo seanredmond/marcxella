@@ -138,7 +138,7 @@ Printing a data field (or calling the `#to_s` method) returns the customary repr
     > record.field("245").first.to_s
      => "245  10$aKindred /$cOctavia E. Butler."
 
-`#display` returns the contents of the fields joined together
+The `#value` of a data field is the contents of the fields joined together
 
     > record.field("245").first.display
       => "Kindred /Octavia E. Butler."
@@ -158,6 +158,9 @@ the tag and code:
 
     > record.field("100", "a").first.to_s
      => "$aButler, Octavia Estelle"
+
+For compatability, control fields have `#subfield` and `#subfields` methods,
+which always return an empty array.
 
 If you want to get multiple fields at once, you can pass an array:
 

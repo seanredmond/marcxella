@@ -133,6 +133,12 @@ RSpec.describe Marcxella::Record do
         expect(s.first.value).to eq "Kindred /"
       end
 
+      it "has no subfields for control fields" do
+        s = @kindred.field("001", "a")
+        expect(s).to be_a Array
+        expect(s).to be_empty 
+      end
+
       it "accepts an array of tags" do
         s = @kindred.field(["650", "651"])
         expect(s).to be_a Array
@@ -175,6 +181,15 @@ RSpec.describe Marcxella::Record do
         expect(s.map{|f| f.value}).
           to eq ["African American women", "Time travel", "Fiction."]
       end
+
+      it "can return a mix of ControlField, DataField, and SubField objects" do
+        s = @kindred.field(["001", "245", ["650", "a"]])
+        expect(s).to be_a Array
+        expect(s.count).to eq 4
+        expect(s[0]).to be_a Marcxella::ControlField
+        expect(s[1]).to be_a Marcxella::DataField
+        expect(s[2]).to be_a Marcxella::SubField
+      end        
     end
 
     describe "#fields" do
@@ -204,7 +219,7 @@ RSpec.describe Marcxella::Record do
 
     describe "#titleStatement" do
       it "returns the title statement" do
-        expect(@kindred.titleStatement.display).
+        expect(@kindred.titleStatement.value).
           to eq "Kindred /Octavia E. Butler."
       end
     end
@@ -243,9 +258,17 @@ RSpec.describe Marcxella::ControlField do
     end
   end
 
-  describe "#display" do
-    it "has a display form" do
-      expect(@c.display).to eq "1027474578"
+  describe "#subfields" do
+    it "has no subfields" do
+      expect(@c.subfields).to be_a Array
+      expect(@c.subfields).to be_empty
+    end
+  end
+
+  describe "#subfield" do
+    it "has no subfields" do
+      expect(@c.subfield("a")).to be_a Array
+      expect(@c.subfield("a")).to be_empty
     end
   end
 end
@@ -291,9 +314,9 @@ RSpec.describe Marcxella::DataField do
     end
   end
 
-  describe "#display" do
-    it "has a display form" do
-      expect(@d.display).to eq "Kindred /Octavia E. Butler."
+  describe "#value" do
+    it "returns the value" do
+      expect(@d.value).to eq "Kindred /Octavia E. Butler."
     end
   end
 end

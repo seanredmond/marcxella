@@ -8,7 +8,7 @@ module Marcxella
       @subfields = node.css('subfield').map{|s| SubField.new(s)}
     end
 
-    def display
+    def value
       @subfields.map{|s| s.value}.join('')
     end
     
