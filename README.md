@@ -3,6 +3,9 @@
 [![Gem Version](http://img.shields.io/gem/v/marcxella.svg)][gem]
 [![Build Status](http://img.shields.io/travis/seanredmond/marcxella.svg)][travis]
 
+[gem]: https://rubygems.org/gems/marcxella
+[travis]: http://travis-ci.org/seanredmond/marcxella
+
 A simple interface to MARC-XML, for when you just need to parse some
 MARC-XML quickly.
 
