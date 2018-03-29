@@ -3,7 +3,7 @@
 A simple interface to MARC-XML, for when you just need to parse some
 MARC-XML quickly.
 
-Pronounce it "mar-sélla".
+Pronounce it "marc-sélla".
 
 ## Installation
 
@@ -36,7 +36,8 @@ You can also create a document from a string of XML:
     > xml = File.open("spec/xml/1027474578.xml").read
     > marc = Marcxella::Document.new(xml)
     
-Marxcella uses Nokogiri internally, so you also just pass a Nokogiri document:
+Marxcella uses Nokogiri internally, so you can also just pass a Nokogiri
+document:
 
     > doc = Nokogiri::XML(file)
     > marc = Marcxella::Document.new(doc)
@@ -105,8 +106,8 @@ All fields have tags and values:
     > puts title
     245  10$aKindred /$cOctavia E. Butler.
     
-Data fields have subfields. You can get an array of all of them or select array
-of subfields by code.
+Data fields have subfields. You can get an array of all of them or select an
+array of subfields by code.
 
     > title.subfields.count
      => 2
@@ -121,6 +122,15 @@ empty arrays:
     > control_number.subfield("a")
      => []
 
+Subfields have codes, values, and string representations:
+
+    > subfield = rec.titleStatement.subfield("a").first
+    > subfield.code
+     => "a"
+    > subfield.value
+     => "Kindred /"
+    > subfield.to_s
+     => "$aKindred /"
 
 ### Convenience methods
 
@@ -136,7 +146,9 @@ of fields. `#mainEntry` will return whichever of the 1XX fields the record has
     > rec.titleStatement.value
      => "Kindred /Octavia E. Butler."
 
-There are also methods to get an array of each of the main categories of fields. Each of these return an array of all the fields in the record of the given category:
+There are also methods to get an array of each of the main categories of
+fields. Each of these returns an array of all the fields in the record of the
+given category:
 
     > rec.controlFields # 00X
     > rec.codes         # 01X-09X
