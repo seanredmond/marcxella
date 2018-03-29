@@ -84,7 +84,7 @@ RSpec.describe Marcxella::Collection do
       it "returns records" do
         expect(@lengle.records).to be_a Array
         expect(@lengle.records.count).to eq 1
-      expect(@lengle.records.map{|r| r.class}.uniq).to eq [Marcxella::Record]
+        expect(@lengle.records.map{|r| r.class}.uniq).to eq [Marcxella::Record]
       end
     end
   end
@@ -103,6 +103,8 @@ RSpec.describe Marcxella::Record do
     before(:context) do 
       @butler = Marcxella::Document.new(File.open(XML_BUTLER, 'r'))
       @kindred = @butler.records.first
+      @wrinkle = Marcxella::Document.new(File.open(XML_LENGLE, 'r')).
+                  records.first
     end
 
     describe "#field" do
@@ -224,6 +226,26 @@ RSpec.describe Marcxella::Record do
       end
     end
 
+    describe "#controlFields" do
+      it "returns the control fields" do
+        ctrl = @kindred.controlFields
+        expect(ctrl).to be_a Array
+        expect(ctrl.map{|c| c.class}.uniq).to eq [Marcxella::ControlField]
+        expect(ctrl.count).to eq 2
+        expect(ctrl.first.tag).to eq "001"
+        expect(ctrl.last.tag).to eq "008"
+      end
+    end
+
+    describe "#codes" do
+      it "returns the code fields" do
+        codes = @kindred.codes
+        expect(codes).to be_a Array
+        expect(codes.count).to eq 2
+        expect(codes.first.tag).to eq "020"
+      end
+    end
+    
     describe "#titles" do
       it "returns all the title fields" do
         @binti = Marcxella::Document.new(File.open(XML_OKORAFOR)).
@@ -232,6 +254,100 @@ RSpec.describe Marcxella::Record do
         expect(@binti.titles.count).to eq 2
         expect(@binti.titles.first.tag).to eq "245"
         expect(@binti.titles.last.tag).to eq "246"
+      end
+    end
+
+    describe "#edition" do
+      it "returns all the edition fields" do
+        edition = @wrinkle.edition
+        expect(edition).to be_a Array
+        expect(edition.count).to eq 1
+        expect(edition[0].tag).to eq "260"
+      end
+    end
+
+    describe "#description" do
+      it "returns all the description fields" do
+        description = @wrinkle.description
+        expect(description).to be_a Array
+        expect(description.count).to eq 1
+        expect(description[0].tag).to eq "300"
+      end
+    end
+
+    describe "#series" do
+      it "returns all the series fields" do
+        marner = Marcxella::Document.new(File.open(XML_ELIOT, 'r')).
+                   records.first
+        series = marner.series
+        expect(series).to be_a Array
+        expect(series.count).to eq 1
+        expect(series[0].tag).to eq "490"
+      end
+    end
+
+    describe "#notes" do
+      it "returns all the notes fields" do
+        quilt = Marcxella::Document.new(File.open(XML_QUILT)).
+                  records.first
+        notes = quilt.notes
+        expect(notes).to be_a Array
+        expect(notes.count).to eq 3
+        expect(notes[0].tag).to eq "500"
+      end
+    end
+
+    describe "#notes" do
+      it "returns all the subject fields" do
+        subjects = @kindred.subjects
+        expect(subjects).to be_a Array
+        expect(subjects.count).to eq 4
+        expect(subjects[0].tag).to eq "650"
+      end
+    end
+
+    describe "#addedEntries" do
+      it "returns all the added entryfields" do
+        quilt = Marcxella::Document.new(File.open(XML_QUILT)).
+                  records.first
+        added = quilt.addedEntries
+        expect(added).to be_a Array
+        expect(added.count).to eq 2
+        expect(added[0].tag).to eq "700"
+        expect(added[1].tag).to eq "710"
+      end
+    end
+
+    describe "linking" do
+      it "returns all the notes fields" do
+        russian = Marcxella::Document.new(File.open(XML_RUSSIAN)).
+                  records.first
+        links = russian.linking
+        expect(links).to be_a Array
+        expect(links.count).to eq 1
+        expect(links[0].tag).to eq "776"
+      end
+    end
+
+    describe "seriesAdded" do
+      it "returns all the series added entry fields" do
+        xenophon = Marcxella::Document.new(File.open(XML_XENOPHON)).
+                  records.first
+        series = xenophon.seriesAdded
+        expect(series).to be_a Array
+        expect(series.count).to eq 1
+        expect(series[0].tag).to eq "810"
+      end
+    end
+
+    describe "holdings" do
+      it "returns all the holdings fields" do
+        binti = Marcxella::Document.new(File.open(XML_OKORAFOR)).
+                 records.first
+        holdings = binti.holdings
+        expect(holdings).to be_a Array
+        expect(holdings.count).to eq 1
+        expect(holdings[0].tag).to eq "880"
       end
     end
   end 

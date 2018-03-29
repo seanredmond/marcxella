@@ -23,171 +23,140 @@ Or install it yourself as:
 
 ## Usage
 
-### Documents and Collections
+### Documents
 
-Create a `Document` from a file handle:
+records (`Marcxella::Record`) are the main objects you'll be dealing with. To get at the records, you'll probably create a document. This can be done from a filehandle:
 
-    marc = Marcxella::Document.new(File.open("marc.xml", "r"))
-	
-a Nokogiri document:
+    > require "marcxella"
+    > file = File.open("spec/xml/1027474578.xml")
+    > marc = Marcxella::Document.new(file)
+    
+You can also create a document from a string of XML:
 
-    doc = File.open("marc.xml") { |f| Nokogiri::XML(f) }
-	marc = Marcxella::Document.new(doc)
-	
-or a string containing the XML:
+    > xml = File.open("spec/xml/1027474578.xml").read
+    > marc = Marcxella::Document.new(xml)
+    
+Marxcella uses Nokogiri internally, so you also just pass a Nokogiri document:
 
-    xml_str = File.open("marc.xml", "r").read
-	marc = Marcxella::Document.new(xml_str)
+    > doc = Nokogiri::XML(file)
+    > marc = Marcxella::Document.new(doc)
+    
+Once you have the document, you can get an array of the records:
 
-Depending on the xml, you might fetch records from `Document`:
+    > records = marc.records
+    
+If you want, you can create the records directly from Nokogiri nodes
 
-    records = marc.records
+    > file = File.open("spec/xml/1027474578.xml")
+    > doc = Nokogiri::XML(file)
+    > records = doc.css('record').map{|r| Marcxella::Record.new(r)}
+    
+If the xml document contains collections, you can get the collections and then
+get the records from those.
 
-Or collections, which themselves contain records:
+    > first_coll = marc.collections.first
+    > records = first_coll.records
 
-    marc.collections.each do |collection|
-	  records = collection.records
-	end
-	
-Records and collections can also be created directly from Nokogiri nodes:
+If the document does contain collections, `Marcxella::Document#records` will
+simply ignore the collections and return an array of _all_ the records from
+_all_ the collections.
 
-    doc = File.open("marc.xml") { |f| Nokogiri::XML(f) }
-    records = doc.css("record").map{|r| Marcxella::Record.new(r)}
-	
 ### Records and fields
 
-From a record, you can get a field by its tag. The tag can be a string or an
-integer. The result is always an array. No distinction is made between repeating
-and non-repeating fields:
+Once you have a record, you can get the fields by tag:
 
+    > rec = marc.records.first
+    > f = rec.field("001")
+    
+The `#field` method always returns an array, so even when you expect a single
+field, you have to get it from the array. There is no distinction made between
+repeating and non-repeating fields.
 
-    # These all work...
-    record.field("245")
-    record.field(245)
-	record.field("008")
-	record.field(8) 
-	
-Be careful, though. Numbers begining with a 0 are octal numbers, so `010` actually means `8` or `"008"` and `008` is an error. 
+    > control_number = rec.field("001").first
+    > title = rec.field("245").first
+    > subjects = rec.field("650")
 
-    # Don't do this
-    record.field(008)
+Control fields and Data fields have different classes:
 
-`Record#field` always returns an array:
-
-    > record.field("245").class
-     => Array
-	> puts record.field("245").first
-     => "245  10$aKindred /$cOctavia E. Butler."
-
-There are a few convenience methods. `Record#titleStatement` returns the 245
-field (as a `DataField`, not an array).
-
-    > record.titleStatement.class
-     => Marcxella::DataField
-	> puts record.titleStatement
-     => "245  10$aKindred /$cOctavia E. Butler."
-
-`Record#titles` returns an array of all the title and title related fields
-(20X-24X)
-	
-	> record.titles
-
-`Record#mainEntry` will return whichever of the 1XX fields is in the record (there should be only one):
-
-	> puts record.mainEntry.tag
-     => "100"
-
-You can get anarray of all the fields:
-
-    record.fields
-
-Control fields and data fields have different classes:
-
-    > record.field("008").first.class
+    > control_number.class
      => Marcxella::ControlField
+    > title.class
+     => Marcxella::DataField
 
-    > record.field("245").first.class
-     => Marcxella::DataField	 
-	 
-Control fields have `tag` and a `value`:
+All fields have tags and values:
 
-    > record.field("008").first.tag
-     => "008"
+    > control_number.tag
+     => "001"
+    > control_number.value
+     => "1027474578"
 
-    > record.field("008").first.value
-     => "180306r20141979xxk    g      000 j eng d"
-	 
-Data fields, have a `tag` and a `value` as well as two indicators:
+    > title.tag
+     => "245"
+    > title.value
+     => "Kindred /Octavia E. Butler."
+     
+`#to_s` returns the customary representation of the field data:
 
-    > record.field("245").first.ind1
-     => "1"
+    > control_number.to_s
+     => "001    1027474578"
 
-    > record.field("245").first.ind2
-     => "0"
-
-You can retrieve all the subfields, or subfields by code:
-
-    field = record.field("245").first
-	field.subfields
-	field.subfield("a")
-
-`subfields` and `subfield` both return arrays.
-	
-Printing a data field (or calling the `#to_s` method) returns the customary representation:
-
-    > record.field("245").first.to_s
+    > title.to_s
      => "245  10$aKindred /$cOctavia E. Butler."
+    > puts title
+    245  10$aKindred /$cOctavia E. Butler.
+    
+Data fields have subfields. You can get an array of all of them or select array
+of subfields by code.
 
-The `#value` of a data field is the contents of the fields joined together
+    > title.subfields.count
+     => 2
+    > title.subfield("a").first.to_s
+     => "$aKindred /"
 
-    > record.field("245").first.display
-      => "Kindred /Octavia E. Butler."
+For compatibility, control fields have these methods, too, which always return
+empty arrays:
 
-Subfields have a `code` and a `value` and can be printed:
+    > control_number.subfields
+     => []
+    > control_number.subfield("a")
+     => []
 
-    > subfield = record.field("100").first.subfield("a").first
-	> subfield.code
-     => "a"
-	> subfield.value
-     => "Butler, Octavia Estelle"
-	> subfield.to_s
-     => "$aButler, Octavia Estelle"
 
-You can also get the subfield from the record by calling `field` with
-the tag and code:
+### Convenience methods
 
-    > record.field("100", "a").first.to_s
-     => "$aButler, Octavia Estelle"
+There are several methods to make it easier to get single fields or categories
+of fields. `#mainEntry` will return whichever of the 1XX fields the record has
+(as a `DataField`, not an array):
 
-For compatability, control fields have `#subfield` and `#subfields` methods,
-which always return an empty array.
+    > rec.mainEntry.to_s
+     => "100  1\#$aButler, Octavia Estelle$d(1947-2006).$4aut"
 
-If you want to get multiple fields at once, you can pass an array:
+`#titleStatement` gets the 245 field (again, as a `DataField` and not an array):
 
-    record.field(["600", "650", "651"])
-	
-This will return an array of any of those fields that exist in a
-record. You can add a code:
+    > rec.titleStatement.value
+     => "Kindred /Octavia E. Butler."
 
-    record.field(["600", "650", "651"], "a")
-	
-This would return an array of 600$a, 650$a, and/or 651$a
-subfields. The array can be a list of tag and code pairs:
+There are also methods to get an array of each of the main categories of fields. Each of these return an array of all the fields in the record of the given category:
 
-    record.field([["600", "a"], ["650", "b"], ["651", "c"]])
-	
-From this you would get an array of the 600$a, 650$b, and 651$c
-subfields. Finally, you can mix and match:
+    > rec.controlFields # 00X
+    > rec.codes         # 01X-09X
+    > rec.titles        # 20X-24X
+    > rec.edition       # 25X-28X
+    > rec.description   # 3XX
+    > rec.series        # 4XX
+    > rec.notes         # 5XX
+    > rec.subjects      # 6XX
+    > rec.addedEntries  # 70X-75X
+    > rec.linking       # 76X-78X
+    > rec.seriesAdded   # 80X-83X
+    > rec.holdings      # 841-88X
 
-	record.field(["600", "650", ["651", "a"]])
-	
-The resulting array would contain some DataFields (for the 600s and
-650s) and some subfields (651$a). An additional code will act as a
-default. These two are equivalent:
+### Leader
 
-	record.field(["600", "650", ["651", "a"]], "b")
-    record.field([["600", "b"], ["650", "b"], ["651", "a"]])
-	
+You can get the record leader:
+
+    > rec.leader
+     => "00000cam a2200000Mi 4500"
 
 ## Development
 
