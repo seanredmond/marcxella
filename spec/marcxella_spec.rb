@@ -137,6 +137,28 @@ RSpec.describe Marcxella::Record do
       end
     end
 
+    describe "#subfield" do
+      it "returns the specified subfields" do
+        s = @kindred.subfield("650", "a")
+        expect(s).to be_a Array
+        expect(s.count).to eq 2
+        expect(s.map{|f| f.class}.uniq).to eq [Marcxella::SubField]
+      end
+
+      it "returns nothing from fields that don't have the subfield" do
+        # There is one 651 field with an $x and one without
+        s = @kindred.subfield("651", "x")
+        expect(s).to be_a Array
+        expect(s.count).to eq 1
+      end
+
+      it "returns an empty array if there are no matches" do
+        s = @kindred.subfield("650", "9")
+        expect(s).to be_a Array
+        expect(s).to be_empty
+      end
+    end
+    
     describe "#mainEntry" do
       it "returns a single main entry data field" do
         m = @kindred.mainEntry

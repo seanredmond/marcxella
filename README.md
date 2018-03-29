@@ -131,6 +131,12 @@ Subfields have codes, values, and string representations:
      => "Kindred /"
     > subfield.to_s
      => "$aKindred /"
+     
+You can get all instances of a subfield of a given tag. For instance, to get all
+the ISBN numbers:
+
+    > rec.subfield("020", "a").map{|s| s.value}
+     => ["9781472214812", "1472214811"]
 
 ### Convenience methods
 

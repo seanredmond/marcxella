@@ -177,6 +177,15 @@ module Marcxella
       @fields.select{|f| f.tag >= first and f.tag <= last}
     end
 
+    # get a subfield from matching fields, for instance all 651$a subfields
+    # @param [String] tag tag to match
+    # @param [String] code code to match
+    # @return [Array<SubField>] an array of matching subfields
+    # @since 0.1.0
+    def subfield(tag, code)
+      field(tag).map{|f| f.subfields.select{|s| s.code == code } }.flatten
+    end
+    
     private :objectify, :tag_range
   end
 end
