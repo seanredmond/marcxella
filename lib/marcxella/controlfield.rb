@@ -26,7 +26,11 @@ module Marcxella
     # don't have subfields
     # @return Array an empty array
     def subfield(code)
-      @subfields
+      []
+    end
+
+    def [](code)
+      []
     end
   end
 end

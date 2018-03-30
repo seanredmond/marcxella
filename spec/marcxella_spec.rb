@@ -124,6 +124,12 @@ RSpec.describe Marcxella::Record do
         expect(@kindred.field("245").first).to be_a Marcxella::DataField
         expect(@kindred.field("001").first).to be_a Marcxella::ControlField
       end
+
+      it "works with []" do
+        title = @kindred["245"]
+        expect(title).to be_a Array
+        expect(title.first.tag).to eq "245"
+      end
     end
 
     describe "#fields" do
@@ -366,6 +372,11 @@ RSpec.describe Marcxella::ControlField do
       expect(@c.subfield("a")).to be_a Array
       expect(@c.subfield("a")).to be_empty
     end
+
+    it "works with []" do
+      expect(@c["a"]).to be_a Array
+      expect(@c["a"]).to be_empty
+    end
   end
 end
     
@@ -396,6 +407,12 @@ RSpec.describe Marcxella::DataField do
       s = @d.subfield("a")
       expect(s).to be_a Array
       expect(s.map{|c| c.class}.uniq).to eq [Marcxella::SubField]
+      expect(s.first.value).to eq "Kindred /"
+    end
+
+    it "works with []" do
+      s = @d["a"]
+      expect(s).to be_a Array
       expect(s.first.value).to eq "Kindred /"
     end
   end

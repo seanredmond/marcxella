@@ -20,6 +20,11 @@ module Marcxella
       return @fields.select{|f| f.tag == tag}
     end
 
+    # Alias for #field
+    def [](tag)
+      field tag
+    end
+
     # The control and data fields of the record
     # @return [Array<ControlField, DataField>]
     def fields

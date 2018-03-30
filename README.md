@@ -75,13 +75,17 @@ Once you have a record, you can get the fields by tag:
     > rec = marc.records.first
     > f = rec.field("001")
     
+[] works also, as if the record was a hash of the fields
+
+    > f = rec["001"]
+	
 The `#field` method always returns an array, so even when you expect a single
 field, you have to get it from the array. There is no distinction made between
 repeating and non-repeating fields.
 
-    > control_number = rec.field("001").first
-    > title = rec.field("245").first
-    > subjects = rec.field("650")
+    > control_number = rec["001"].first
+    > title = rec["245"].first
+    > subjects = rec["650"]
 
 Control fields and Data fields have different classes:
 
@@ -113,11 +117,13 @@ All fields have tags and values:
     245  10$aKindred /$cOctavia E. Butler.
     
 Data fields have subfields. You can get an array of all of them or select an
-array of subfields by code.
+array of subfields by code `[]` works also to get subfields from a data field.
 
     > title.subfields.count
      => 2
     > title.subfield("a").first.to_s
+     => "$aKindred /"
+    > title["a"].first.to_s
      => "$aKindred /"
 
 For compatibility, control fields have these methods, too, which always return
@@ -127,10 +133,12 @@ empty arrays:
      => []
     > control_number.subfield("a")
      => []
+    > control_number["a"]
+     => []
 
 Subfields have codes, values, and string representations:
 
-    > subfield = rec.titleStatement.subfield("a").first
+    > subfield = rec.titleStatement["a"].first
     > subfield.code
      => "a"
     > subfield.value
@@ -138,8 +146,8 @@ Subfields have codes, values, and string representations:
     > subfield.to_s
      => "$aKindred /"
      
-You can get all instances of a subfield of a given tag. For instance, to get all
-the ISBN numbers:
+You can get all instances of a subfield of a given tag from a
+record. For instance, to get all the ISBN numbers:
 
     > rec.subfield("020", "a").map{|s| s.value}
      => ["9781472214812", "1472214811"]

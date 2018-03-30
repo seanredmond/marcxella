@@ -19,6 +19,10 @@ module Marcxella
     def subfield(code)
       @subfields.select{|s| s.code == code }
     end
+
+    def [](code)
+      subfield code
+    end
     
     def ind_to_s(i)
       if i == ' '
