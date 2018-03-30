@@ -117,7 +117,7 @@ All fields have tags and values:
     245  10$aKindred /$cOctavia E. Butler.
     
 Data fields have subfields. You can get an array of all of them or select an
-array of subfields by code `[]` works also to get subfields from a data field.
+array of subfields by code. `[]` also works to get subfields from a data field.
 
     > title.subfields.count
      => 2
