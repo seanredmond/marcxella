@@ -75,7 +75,7 @@ Once you have a record, you can get the fields by tag:
     > rec = marc.records.first
     > f = rec.field("001")
     
-`[]` works also, as if the record was a hash of the fields
+`[]` works also, as if the record was a hash of the fields.
 
     > f = rec["001"]
 	
